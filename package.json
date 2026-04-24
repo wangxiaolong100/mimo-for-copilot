@@ -1,0 +1,126 @@
+{
+  "name": "deepseek-v4-for-copilot",
+  "displayName": "DeepSeek V4 for GitHub Copilot",
+  "description": "Pick DeepSeek V4 Pro & Flash from the Copilot Chat model picker. Vision, thinking mode, agent tools — zero config, BYOK.",
+  "icon": "resources/icon.png",
+  "version": "0.1.0",
+  "publisher": "Vizards",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Vizards/deepseek-v4-for-copilot"
+  },
+  "engines": {
+    "vscode": "^1.116.0"
+  },
+  "extensionKind": [
+    "workspace"
+  ],
+  "categories": [
+    "AI",
+    "Chat",
+    "Programming Languages"
+  ],
+  "keywords": [
+    "deepseek",
+    "deepseek v4",
+    "deepseek-v4",
+    "copilot",
+    "github copilot",
+    "copilot chat",
+    "vision",
+    "byok",
+    "language model",
+    "thinking",
+    "reasoning",
+    "ai",
+    "chat"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "enabledApiProposals": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languageModelChatProviders": [
+      {
+        "vendor": "deepseek",
+        "displayName": "DeepSeek"
+      }
+    ],
+    "commands": [
+      {
+        "command": "deepseek-copilot.setApiKey",
+        "title": "DeepSeek: Set API Key"
+      },
+      {
+        "command": "deepseek-copilot.clearApiKey",
+        "title": "DeepSeek: Clear API Key"
+      },
+      {
+        "command": "deepseek-copilot.setVisionModel",
+        "title": "DeepSeek: Set Vision Proxy Model"
+      },
+      {
+        "command": "deepseek-copilot.openSettings",
+        "title": "DeepSeek: Open Settings"
+      },
+      {
+        "command": "deepseek-copilot.showLogs",
+        "title": "DeepSeek: Show Logs"
+      }
+    ],
+    "configuration": {
+      "title": "DeepSeek Copilot",
+      "properties": {
+        "deepseek-copilot.baseUrl": {
+          "type": "string",
+          "default": "https://api.deepseek.com",
+          "description": "DeepSeek API base URL. Defaults to official DeepSeek API endpoint."
+        },
+        "deepseek-copilot.thinkingEffort": {
+          "type": "string",
+          "enum": ["high", "max"],
+          "default": "high",
+          "description": "Thinking effort level for V4 models. 'high' for most tasks, 'max' for complex agent tasks. Only applies when thinking is enabled."
+        },
+        "deepseek-copilot.thinking": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable thinking mode (chain-of-thought reasoning). Disable to save tokens on simple tasks; re-enables temperature and top_p support."
+        },
+        "deepseek-copilot.maxTokens": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "description": "Maximum number of output tokens per request. Set to 0 to use the API default (no limit). Useful for controlling costs."
+        },
+        "deepseek-copilot.visionModel": {
+          "type": "string",
+          "default": "",
+          "description": "Model ID for vision proxy (describes images for text-only DeepSeek models). Leave empty for auto-detection. Use 'DeepSeek: Set Vision Proxy Model' command to pick one from a list."
+        },
+        "deepseek-copilot.visionPrompt": {
+          "type": "string",
+          "editPresentation": "multilineText",
+          "default": "Describe the visual contents of this image in detail, including any text, objects, people, or context that would be relevant for understanding it. Focus on factual visual elements.",
+          "description": "Prompt sent to the vision proxy model when describing image attachments before forwarding them to DeepSeek."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package -o dist/",
+    "publish": "vsce publish",
+    "login": "vsce login Vizards"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "@types/vscode": "^1.116.0",
+    "@vscode/vsce": "^3.9.1",
+    "typescript": "^6.0.3"
+  }
+}
