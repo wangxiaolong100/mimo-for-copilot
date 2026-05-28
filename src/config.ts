@@ -4,12 +4,32 @@ import { CONFIG_SECTION } from './consts';
 export type DebugMode = 'minimal' | 'metadata' | 'verbose';
 
 /**
- * Get DeepSeek API base URL from settings.
- * Falls back to the official endpoint when not configured.
+ * MiMo API base URL constants.
  */
-export function getBaseUrl(): string {
-	const config = vscode.workspace.getConfiguration(CONFIG_SECTION);
-	return config.get<string>('baseUrl') || 'https://api.deepseek.com';
+const MIMO_BASE_URL_PAY_AS_YOU_GO = 'https://api.xiaomimimo.com/v1';
+const MIMO_BASE_URL_TOKEN_PLAN_CN = 'https://token-plan-cn.xiaomimimo.com/v1';
+
+/**
+ * Detect the appropriate MiMo base URL based on the API key prefix.
+ * - `tp-` prefix → Token Plan (China)
+ * - `sk-` prefix → Pay-as-you-go
+ */
+export function detectBaseUrlFromApiKey(apiKey: string): string {
+	if (apiKey.startsWith('tp-')) {
+		return MIMO_BASE_URL_TOKEN_PLAN_CN;
+	}
+	return MIMO_BASE_URL_PAY_AS_YOU_GO;
+}
+
+/**
+ * Get MiMo API base URL.
+ * Automatically detects based on API key prefix.
+ */
+export function getBaseUrl(apiKey?: string): string {
+	if (apiKey) {
+		return detectBaseUrlFromApiKey(apiKey);
+	}
+	return MIMO_BASE_URL_PAY_AS_YOU_GO;
 }
 
 /**
@@ -58,7 +78,7 @@ export function getDebugLoggingEnabled(): boolean {
 }
 
 /**
- * Whether to write full DeepSeek request payloads to disk.
+ * Whether to write full MiMo request payloads to disk.
  */
 export function getRequestDumpEnabled(): boolean {
 	return getDebugMode() === 'verbose';
@@ -70,7 +90,7 @@ export function getStabilizeToolListEnabled(): boolean {
 }
 
 /**
- * Migrate the legacy boolean `deepseek-copilot.debug` setting to `debugMode`.
+ * Migrate the legacy boolean `mimo-copilot.debug` setting to `debugMode`.
  *
  * `debug: true` maps to `debugMode: metadata`; `debug: false` maps to the
  * default `minimal`, so it only needs cleanup.

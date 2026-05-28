@@ -21,28 +21,29 @@ const zh: Translations = {
 	// Model descriptions
 	'model.flash.detail': '快速高效',
 	'model.pro.detail': '深度推理',
+	'model.omni.detail': '全模态理解',
 
 	// API Key
 	'auth.apiKeyRequiredDetail': '请先配置 API Key',
-	'auth.prompt': '请输入 DeepSeek API Key 或兼容服务令牌。官方 DeepSeek Key 通常以 "sk-" 开头。',
+	'auth.prompt': '请输入 MiMo API Key 或兼容服务令牌。官方 MiMo Key 通常以 "sk-" 开头。',
 	'auth.placeholder': 'sk-... 或服务商令牌',
 	'auth.emptyValidation': 'API Key 不能为空',
 	'auth.saved': 'API Key 已安全保存。',
 	'auth.removed': 'API Key 已移除。',
-	'auth.notConfigured': 'API Key 未配置，请在命令面板运行 "DeepSeek: 设置 API Key"。',
+	'auth.notConfigured': 'API Key 未配置，请在命令面板运行 "MiMo: 设置 API Key"。',
 
 	// Thinking Effort — short labels for model picker dropdown
 	'status.thinking': '思考模式',
 	'thinking.none': '停用',
 	'thinking.none.desc': '停用思考，响应更快',
-	'thinking.high': '标准',
-	'thinking.high.desc': '推荐日常使用',
-	'thinking.max': '深度',
-	'thinking.max.desc': '深度推理，适合复杂任务',
+	'thinking.medium': '标准',
+	'thinking.medium.desc': '推荐日常使用',
+	'thinking.high': '深度',
+	'thinking.high.desc': '深度推理，适合复杂任务',
 
 	// Vision
 	'vision.vendorLabel': '提供商：{0}',
-	'vision.noModel': '当前环境中没有可用的非 DeepSeek 视觉代理模型。',
+	'vision.noModel': '当前环境中没有可用的非 MiMo 视觉代理模型。',
 	'vision.pickPlaceholder': '选择用于描述图片的模型 (默认 {0})',
 	'vision.current': '当前',
 	'vision.proxyUsing': '视觉代理：{0}',
@@ -52,11 +53,11 @@ const zh: Translations = {
 
 	// Request
 	'request.toolsLimitExceeded':
-		'DeepSeek 单次 tools 请求最多支持 {0} 个 functions，当前请求包含 {1} 个。请先用 VS Code 的 Configure Tools 关闭不常用的工具；如果正在使用实验性稳定工具列表设置，请关闭它。',
+		'MiMo 单次 tools 请求最多支持 {0} 个 functions，当前请求包含 {1} 个。请先用 VS Code 的 Configure Tools 关闭不常用的工具；如果正在使用实验性稳定工具列表设置，请关闭它。',
 	'request.preflightRoundLimitExceeded':
 		'实验性稳定工具列表设置已尝试 {0} 轮，仍无法得到稳定的已启用工具列表。请关闭该实验性设置，或先用 VS Code 的 Configure Tools 关闭不常用的工具。',
 	'notice.toolDrift':
-		'⚠️ 工具列表不稳定，缓存命中率可能下降。[了解更多](https://github.com/Vizards/deepseek-v4-for-copilot/blob/main/docs/notices/tool-drift.zh.md)',
+		'⚠️ 工具列表不稳定，缓存命中率可能下降。[了解更多](https://github.com/Vizards/mimo-for-copilot/blob/main/docs/notices/tool-drift.zh.md)',
 
 	// Errors
 	'error.http.400': '[{0}] 请求体格式错误。请根据错误信息提示修改请求体。',
@@ -73,7 +74,7 @@ const zh: Translations = {
 	'error.action.setApiKey': '设置 API Key',
 	'error.action.createApiKey': '创建 API Key',
 	'error.action.viewUsage': '用量',
-	'error.action.checkDeepSeekStatus': 'DeepSeek 状态',
+	'error.action.checkMiMoStatus': 'MiMo 状态',
 	'error.action.viewDetails': '错误详情',
 	'error.network.dns': '[{0}] DNS 解析失败。请检查网络连接、防火墙或代理设置，以及自定义 baseUrl。',
 	'error.network.unreachable':
@@ -88,46 +89,47 @@ const zh: Translations = {
 	'error.network.configuration': '[{0}] 请求配置无效。请检查自定义 baseUrl 或扩展设置。',
 	'error.network.generic':
 		'[{0}] 网络请求失败。请检查网络连接、防火墙或代理设置，以及自定义 baseUrl。',
-	'error.unknown': 'DeepSeek 请求失败：{0}',
+	'error.unknown': 'MiMo 请求失败：{0}',
 
 	// Extension
-	'extension.activateFailed': 'DeepSeek 激活失败，请运行 "DeepSeek: 显示日志" 查看详情。',
-	'extension.deactivateFailed': 'DeepSeek 停用异常',
+	'extension.activateFailed': 'MiMo 激活失败，请运行 "MiMo: 显示日志" 查看详情。',
+	'extension.deactivateFailed': 'MiMo 停用异常',
 	'extension.welcomeFailed': '欢迎引导加载异常',
 	'extension.openRequestDumpsFolderFailed':
-		'打开请求 dump 目录失败，请运行 "DeepSeek: 显示日志" 查看详情。',
+		'打开请求 dump 目录失败，请运行 "MiMo: 显示日志" 查看详情。',
 };
 
 const en: Translations = {
 	// Model descriptions
-	'model.flash.detail': 'Fast, general-purpose model',
+	'model.flash.detail': 'Fast, efficient model for quick tasks',
 	'model.pro.detail': 'Most capable reasoning model',
+	'model.omni.detail': 'Omni model with full multimodal understanding',
 
 	// API Key
-	'auth.apiKeyRequiredDetail': 'Please run DeepSeek: Set API Key to configure.',
+	'auth.apiKeyRequiredDetail': 'Please run MiMo: Set API Key to configure.',
 	'auth.prompt':
-		'Enter your DeepSeek API key or compatible provider token. Official DeepSeek keys usually start with "sk-".',
+		'Enter your MiMo API key or compatible provider token. Official MiMo keys usually start with "sk-".',
 	'auth.placeholder': 'sk-... or provider token',
 	'auth.emptyValidation': 'API key cannot be empty',
-	'auth.saved': 'DeepSeek API key saved.',
-	'auth.removed': 'DeepSeek API key removed.',
+	'auth.saved': 'MiMo API key saved.',
+	'auth.removed': 'MiMo API key removed.',
 	'auth.notConfigured':
-		'DeepSeek API key not configured. Run "DeepSeek: Set API Key" from the Command Palette.',
+		'MiMo API key not configured. Run "MiMo: Set API Key" from the Command Palette.',
 
 	// Thinking Effort
 	'status.thinking': 'Thinking Effort',
 	'thinking.none': 'None',
 	'thinking.none.desc': 'Disable thinking for faster responses',
+	'thinking.medium': 'Medium',
+	'thinking.medium.desc': 'Recommended for most tasks',
 	'thinking.high': 'High',
-	'thinking.high.desc': 'Recommended for most tasks',
-	'thinking.max': 'Max',
-	'thinking.max.desc': 'Maximum reasoning depth for complex agent tasks',
+	'thinking.high.desc': 'Maximum reasoning depth for complex agent tasks',
 
 	// Vision
 	// NOTE: vision.unableToDescribe has been moved to consts.ts as
 	// IMAGE_DESCRIPTION_UNAVAILABLE — it is prompt content, not UI text.
 	'vision.vendorLabel': 'vendor: {0}',
-	'vision.noModel': 'No non-DeepSeek vision proxy models are available in the current environment',
+	'vision.noModel': 'No non-MiMo vision proxy models are available in the current environment',
 	'vision.pickPlaceholder': 'Select a model for image description (default: {0})',
 	'vision.current': 'Current',
 	'vision.proxyUsing': 'Vision proxy: {0}',
@@ -137,11 +139,11 @@ const en: Translations = {
 
 	// Request
 	'request.toolsLimitExceeded':
-		'DeepSeek supports at most {0} functions in a single `tools` request, but this request contains {1}. Use VS Code Configure Tools to disable tools you rarely use. If the experimental tool-list stabilization setting is enabled, turn it off.',
+		'MiMo supports at most {0} functions in a single `tools` request, but this request contains {1}. Use VS Code Configure Tools to disable tools you rarely use. If the experimental tool-list stabilization setting is enabled, turn it off.',
 	'request.preflightRoundLimitExceeded':
 		'Experimental tool-list stabilization tried {0} rounds but still could not get a stable enabled-tools list. Turn this experimental setting off, or use VS Code Configure Tools to disable tools you rarely use first.',
 	'notice.toolDrift':
-		'⚠️ Tool list is unstable; cache hit rate may drop. [Learn more](https://github.com/Vizards/deepseek-v4-for-copilot/blob/main/docs/notices/tool-drift.en.md)',
+		'⚠️ Tool list is unstable; cache hit rate may drop. [Learn more](https://github.com/Vizards/mimo-for-copilot/blob/main/docs/notices/tool-drift.en.md)',
 
 	// Errors
 	'error.http.400':
@@ -164,7 +166,7 @@ const en: Translations = {
 	'error.action.setApiKey': 'Set API Key',
 	'error.action.createApiKey': 'Create API Key',
 	'error.action.viewUsage': 'Usage',
-	'error.action.checkDeepSeekStatus': 'DeepSeek Status',
+	'error.action.checkMiMoStatus': 'MiMo Status',
 	'error.action.viewDetails': 'Error Details',
 	'error.network.dns':
 		'[{0}] DNS lookup failed. Check your network connection, firewall, or proxy settings, and your custom baseUrl.',
@@ -184,14 +186,14 @@ const en: Translations = {
 		'[{0}] The request configuration is invalid. Check your custom baseUrl or extension settings.',
 	'error.network.generic':
 		'[{0}] Network request failed. Check your network connection, firewall, or proxy settings, and your custom baseUrl.',
-	'error.unknown': 'DeepSeek request failed: {0}',
+	'error.unknown': 'MiMo request failed: {0}',
 
 	// Extension
-	'extension.activateFailed': 'DeepSeek failed to activate. Run "DeepSeek: Show Logs" for details.',
-	'extension.deactivateFailed': 'Failed to prepare DeepSeek provider for deactivate',
-	'extension.welcomeFailed': 'Failed to show DeepSeek welcome prompt',
+	'extension.activateFailed': 'MiMo failed to activate. Run "MiMo: Show Logs" for details.',
+	'extension.deactivateFailed': 'Failed to prepare MiMo provider for deactivate',
+	'extension.welcomeFailed': 'Failed to show MiMo welcome prompt',
 	'extension.openRequestDumpsFolderFailed':
-		'Failed to open request dumps folder. Run "DeepSeek: Show Logs" for details.',
+		'Failed to open request dumps folder. Run "MiMo: Show Logs" for details.',
 };
 
 /**

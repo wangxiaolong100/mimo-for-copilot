@@ -1,7 +1,7 @@
 import vscode from 'vscode';
 import { createUserFacingError } from '../client';
 import { logger } from '../logger';
-import type { DeepSeekToolCall, DeepSeekUsage } from '../types';
+import type { MiMoToolCall, MiMoUsage } from '../types';
 import {
 	formatRequestLogLine,
 	observeCancellationToken,
@@ -63,7 +63,7 @@ export function streamChatCompletion({
 					handleThinking(text, state, progress);
 				},
 
-				onToolCall: (toolCall: DeepSeekToolCall) => {
+				onToolCall: (toolCall: MiMoToolCall) => {
 					reportInitialResponseNoticeOnce(progress, state, initialResponseNotice);
 					handleToolCall(toolCall, state, progress);
 				},
@@ -224,7 +224,7 @@ function handleThinking(
 }
 
 function handleToolCall(
-	toolCall: DeepSeekToolCall,
+	toolCall: MiMoToolCall,
 	state: ResponseStreamState,
 	progress: vscode.Progress<vscode.LanguageModelResponsePart>,
 ): void {
@@ -254,7 +254,7 @@ function finalizeReplayDiagnostics(
 
 function updateCharsPerToken(
 	totalRequestChars: number,
-	usage: DeepSeekUsage,
+	usage: MiMoUsage,
 	charsPerToken: number,
 ): number {
 	if (totalRequestChars > 0 && usage.prompt_tokens > 0) {
@@ -266,7 +266,7 @@ function updateCharsPerToken(
 
 function reportCopilotContextUsage(
 	progress: vscode.Progress<vscode.LanguageModelResponsePart>,
-	usage: DeepSeekUsage,
+	usage: MiMoUsage,
 ): void {
 	const data = {
 		prompt_tokens: usage.prompt_tokens,

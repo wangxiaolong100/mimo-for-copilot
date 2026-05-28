@@ -2,29 +2,29 @@ import type { CancellationToken } from 'vscode';
 import { safeStringify } from '../json';
 import { logger } from '../logger';
 import type {
-	DeepSeekRequest,
-	DeepSeekStreamChunk,
-	DeepSeekToolCall,
+	MiMoRequest,
+	MiMoStreamChunk,
+	MiMoToolCall,
 	StreamCallbacks,
 } from '../types';
 import { createHttpError, normalizeRequestError } from './error';
 
 /**
- * Lightweight SSE-streaming DeepSeek API client.
+ * Lightweight SSE-streaming MiMo API client.
  * No external dependencies — uses Node's built-in fetch.
  */
-export class DeepSeekClient {
+export class MiMoClient {
 	constructor(
 		private readonly baseUrl: string,
 		private readonly apiKey: string,
 	) {}
 
 	/**
-	 * Stream a chat completion from the DeepSeek API.
+	 * Stream a chat completion from the MiMo API.
 	 * Parses SSE chunks and dispatches callbacks for content, thinking, and tool calls.
 	 */
 	async streamChatCompletion(
-		request: DeepSeekRequest,
+		request: MiMoRequest,
 		callbacks: StreamCallbacks,
 		cancellationToken?: CancellationToken,
 	): Promise<void> {
@@ -47,7 +47,7 @@ export class DeepSeekClient {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					Authorization: `Bearer ${this.apiKey}`,
+					'api-key': this.apiKey,
 				},
 				body: safeStringify(requestBody),
 				signal: controller.signal,
@@ -66,7 +66,7 @@ export class DeepSeekClient {
 			let buffer = '';
 
 			// Accumulate tool call deltas by index, then emit on finish_reason=stop/tool_calls
-			const pendingToolCalls = new Map<number, DeepSeekToolCall>();
+			const pendingToolCalls = new Map<number, MiMoToolCall>();
 
 			while (true) {
 				if (cancellationToken?.isCancellationRequested) {
@@ -107,7 +107,7 @@ export class DeepSeekClient {
 
 					const jsonStr = trimmed.slice(6);
 					try {
-						const chunk: DeepSeekStreamChunk = JSON.parse(jsonStr);
+						const chunk: MiMoStreamChunk = JSON.parse(jsonStr);
 						const choice = chunk.choices?.[0];
 
 						// Capture usage stats from the API for token-count calibration.
@@ -172,7 +172,7 @@ export class DeepSeekClient {
 				return;
 			}
 			const normalizedError = normalizeRequestError(error);
-			logger.error('DeepSeek request failed:', getDiagnosticMessage(normalizedError), error);
+			logger.error('MiMo request failed:', getDiagnosticMessage(normalizedError), error);
 			callbacks.onError(normalizedError);
 		} finally {
 			cancelListener?.dispose();

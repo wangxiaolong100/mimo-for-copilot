@@ -3,7 +3,7 @@ import vscode from 'vscode';
 import { getDebugLoggingEnabled } from '../../config';
 import { LANGUAGE_MODEL_CHAT_SYSTEM_ROLE } from '../../consts';
 import { logger } from '../../logger';
-import type { DeepSeekMessage, DeepSeekRequest, DeepSeekTool, DeepSeekUsage } from '../../types';
+import type { MiMoMessage, MiMoRequest, MiMoTool, MiMoUsage } from '../../types';
 import { REPLAY_MARKER_MIME, parseFirstReplayMarker } from '../replay';
 import type { ConversationSegment } from '../segment';
 import { ACTIVATE_TOOL_PREFIX } from '../tools/consts';
@@ -11,7 +11,7 @@ import type { ActivatePreflightInspection } from '../tools/preflight';
 import { IMAGE_DESCRIPTION_UNAVAILABLE } from '../vision/consts';
 import type { VisionResolutionStats as VisionPipelineStats } from '../vision/index';
 import {
-	classifyDeepSeekRequest,
+	classifyMiMoRequest,
 	formatModelFields,
 	formatRequestLogLine,
 	type RequestKind,
@@ -72,7 +72,7 @@ export interface CacheTraceStats {
 
 export interface CacheTraceMessageSummary {
 	index: number;
-	role: DeepSeekMessage['role'];
+	role: MiMoMessage['role'];
 	hash: string;
 	contentHash: string;
 	contentHeadHash: string;
@@ -164,7 +164,7 @@ export interface CacheTraceSystemPromptChange {
 }
 
 export interface BeginCacheDiagnosticsOptions {
-	request: DeepSeekRequest;
+	request: MiMoRequest;
 	segment: ConversationSegment;
 	requestKind?: RequestKind;
 	vscodeModelId: string;
@@ -187,7 +187,7 @@ export interface CacheDiagnosticsRun {
 	onDone(info: CacheDiagnosticsDoneInfo): void;
 	onCancellationTokenRequested(): void;
 	onReplayMarkerReport(info: ReplayMarkerReportInfo): void;
-	onUsage(usage: DeepSeekUsage, charsPerToken: number): void;
+	onUsage(usage: MiMoUsage, charsPerToken: number): void;
 }
 
 export type ReplayMarkerReportStatus = 'reported' | 'failed' | 'skipped';
@@ -332,7 +332,7 @@ class DefaultCacheDiagnosticsRecorder implements CacheDiagnosticsRecorder {
 	beginRequest(options: BeginCacheDiagnosticsOptions): CacheDiagnosticsRun {
 		const requestKind =
 			options.requestKind ??
-			classifyDeepSeekRequest({
+			classifyMiMoRequest({
 				request: options.request,
 				inputMessages: options.inputMessages,
 			});
@@ -403,7 +403,7 @@ class DefaultCacheDiagnosticsRecorder implements CacheDiagnosticsRecorder {
 					` thinkingEffort=${options.thinkingEffort}` +
 					` maxTokens=${options.maxTokens ?? 'api-default'}` +
 					` inputMessages=${options.inputMessages.length}` +
-					` deepseekMessages=${options.request.messages.length}`,
+					` mimoMessages=${options.request.messages.length}`,
 			),
 		);
 		const hostPromptTrace = summarizeHostPromptTrace(options.inputMessages);
@@ -615,7 +615,7 @@ class ActiveCacheDiagnosticsRun implements CacheDiagnosticsRun {
 		this.recorder.rememberCacheTrace(this.snapshot);
 	}
 
-	onUsage(usage: DeepSeekUsage, charsPerToken: number): void {
+	onUsage(usage: MiMoUsage, charsPerToken: number): void {
 		logUsage(usage, charsPerToken, this.usageLogContext, this.requestId);
 		if (this.resultComparison) {
 			const hitRate = getCacheHitRate(usage);
@@ -662,7 +662,7 @@ class NoopCacheDiagnosticsRun implements CacheDiagnosticsRun {
 
 	onReplayMarkerReport(_info: ReplayMarkerReportInfo): void {}
 
-	onUsage(usage: DeepSeekUsage, charsPerToken: number): void {
+	onUsage(usage: MiMoUsage, charsPerToken: number): void {
 		logUsage(usage, charsPerToken, this.usageLogContext);
 	}
 }
@@ -794,7 +794,7 @@ function sanitizeLogValue(value: string): string {
 }
 
 function logUsage(
-	usage: DeepSeekUsage,
+	usage: MiMoUsage,
 	charsPerToken: number,
 	context: UsageLogContext,
 	requestId?: number,
@@ -813,7 +813,7 @@ function logUsage(
 	);
 }
 
-function getCacheHitRate(usage: DeepSeekUsage): string {
+function getCacheHitRate(usage: MiMoUsage): string {
 	const cacheHit = usage.prompt_cache_hit_tokens ?? 0;
 	const cacheMiss = usage.prompt_cache_miss_tokens ?? 0;
 	const cacheTotal = cacheHit + cacheMiss;
@@ -1143,9 +1143,9 @@ function getPartConstructorName(part: unknown): string {
 }
 
 export function createCacheTraceSnapshot(
-	request: DeepSeekRequest,
+	request: MiMoRequest,
 	inputMessages: readonly vscode.LanguageModelChatRequestMessage[] = [],
-	requestKind: RequestKind = classifyDeepSeekRequest({ request, inputMessages }),
+	requestKind: RequestKind = classifyMiMoRequest({ request, inputMessages }),
 ): CacheTraceSnapshot {
 	const toolsSerialized = stableStringify(request.tools ?? []);
 	const messageSummaries = summarizeMessages(request.messages);
@@ -1173,7 +1173,7 @@ export function createCacheTraceSnapshot(
 }
 
 function createRedactedComparisonInput(
-	request: DeepSeekRequest,
+	request: MiMoRequest,
 	messageSummaries: CacheTraceMessageSummary[],
 	toolSummaries: CacheTraceToolSummary[],
 ): string {
@@ -1381,7 +1381,7 @@ export function getCacheTraceWarnings(snapshot: CacheTraceSnapshot): string[] {
 	}
 	if (snapshot.stats.missingToolReasoningMessages > 0) {
 		warnings.push(
-			`${snapshot.stats.missingToolReasoningMessages} assistant tool-call message(s) are missing marker-replayed reasoning_content; DeepSeek requires this in thinking tool-call histories and cache prefixes may drift.`,
+			`${snapshot.stats.missingToolReasoningMessages} assistant tool-call message(s) are missing marker-replayed reasoning_content; MiMo requires this in thinking tool-call histories and cache prefixes may drift.`,
 		);
 	}
 	if (snapshot.stats.missingPostToolCallReasoningMessages > 0) {
@@ -1572,7 +1572,7 @@ function formatContentSectionSummary(summary: CacheTraceContentSectionSummary | 
 	);
 }
 
-function summarizeMessages(messages: DeepSeekMessage[]): CacheTraceMessageSummary[] {
+function summarizeMessages(messages: MiMoMessage[]): CacheTraceMessageSummary[] {
 	const summaries: CacheTraceMessageSummary[] = [];
 	let followsToolResult = false;
 	for (const [index, message] of messages.entries()) {
@@ -1587,7 +1587,7 @@ function summarizeMessages(messages: DeepSeekMessage[]): CacheTraceMessageSummar
 }
 
 function summarizeMessage(
-	message: DeepSeekMessage,
+	message: MiMoMessage,
 	index: number,
 	followsToolResult: boolean,
 ): CacheTraceMessageSummary {
@@ -1752,7 +1752,7 @@ function getSafeSystemPromptSectionLabel(line: string): string | undefined {
 	return SAFE_SYSTEM_PROMPT_TAGS.has(tag) ? `tag:${tag}` : 'tag:other';
 }
 
-function summarizeTools(tools: DeepSeekTool[]): CacheTraceToolSummary[] {
+function summarizeTools(tools: MiMoTool[]): CacheTraceToolSummary[] {
 	return tools.map((tool, index) => ({
 		index,
 		name: tool.function.name,
@@ -1762,7 +1762,7 @@ function summarizeTools(tools: DeepSeekTool[]): CacheTraceToolSummary[] {
 	}));
 }
 
-function summarizeStats(messages: DeepSeekMessage[], toolCount: number): CacheTraceStats {
+function summarizeStats(messages: MiMoMessage[], toolCount: number): CacheTraceStats {
 	let userMessages = 0;
 	let assistantMessages = 0;
 	let toolMessages = 0;

@@ -1,24 +1,24 @@
 import vscode from 'vscode';
 import { safeStringify } from '../json';
-import type { DeepSeekMessage, DeepSeekTool, DeepSeekToolCall } from '../types';
+import type { MiMoMessage, MiMoTool, MiMoToolCall } from '../types';
 import { parseFirstReplayMarker } from './replay';
 
 /**
- * Convert VS Code chat messages to DeepSeek format.
+ * Convert VS Code chat messages to MiMo format.
  * Injects marker-replayed reasoning_content for assistant messages.
  */
 export function convertMessages(
 	messages: readonly vscode.LanguageModelChatRequestMessage[],
 	isThinkingModel: boolean,
-): DeepSeekMessage[] {
-	const result: DeepSeekMessage[] = [];
+): MiMoMessage[] {
+	const result: MiMoMessage[] = [];
 
 	for (const message of messages) {
 		const role = mapRole(message.role);
 
 		let content = '';
 		let thinkingContent = '';
-		const toolCalls: DeepSeekToolCall[] = [];
+		const toolCalls: MiMoToolCall[] = [];
 		const toolResults: Array<{ callId: string; content: string }> = [];
 
 		for (const part of message.content) {
@@ -52,7 +52,7 @@ export function convertMessages(
 		if (role === 'assistant') {
 			if (content || toolCalls.length > 0) {
 				const replayMarker = isThinkingModel ? parseFirstReplayMarker(message) : undefined;
-				const msg: DeepSeekMessage = {
+				const msg: MiMoMessage = {
 					role: 'assistant' as const,
 					content: content || '',
 				};
@@ -122,11 +122,11 @@ function mapRole(role: vscode.LanguageModelChatMessageRole): 'user' | 'assistant
 }
 
 /**
- * Convert VS Code tool definitions to DeepSeek format.
+ * Convert VS Code tool definitions to MiMo format.
  */
 export function convertTools(
 	tools: readonly vscode.LanguageModelChatTool[] | undefined,
-): DeepSeekTool[] | undefined {
+): MiMoTool[] | undefined {
 	if (!tools || tools.length === 0) {
 		return undefined;
 	}
@@ -144,7 +144,7 @@ export function convertTools(
 /**
  * Count total characters across all messages to calibrate chars-per-token ratio.
  */
-export function countMessageChars(messages: DeepSeekMessage[]): number {
+export function countMessageChars(messages: MiMoMessage[]): number {
 	let total = 0;
 	for (const msg of messages) {
 		total += msg.content?.length ?? 0;

@@ -12,7 +12,7 @@ import type { ModelDefinition } from '../types';
  * config dropdown in the model picker.
  */
 
-export type ThinkingEffort = 'none' | 'high' | 'max';
+export type ThinkingEffort = 'none' | 'medium' | 'high';
 
 export type ModelConfigurationOptions = vscode.ProvideLanguageModelChatResponseOptions & {
 	readonly modelConfiguration?: Record<string, unknown>;
@@ -57,11 +57,12 @@ export function getConfiguredThinkingEffort(options: ModelConfigurationOptions):
 		return 'none';
 	}
 
-	if (configuredEffort === 'high') {
-		return 'high';
+	if (configuredEffort === 'medium') {
+		return 'medium';
 	}
 
-	return configuredEffort === 'max' ? 'max' : 'high';
+	// MiMo only supports 'low', 'medium', 'high' - map legacy 'max' to 'high'
+	return 'high';
 }
 
 function buildThinkingEffortSchema() {
@@ -70,12 +71,12 @@ function buildThinkingEffortSchema() {
 			reasoningEffort: {
 				type: 'string',
 				title: t('status.thinking'),
-				enum: ['none', 'high', 'max'],
-				enumItemLabels: [t('thinking.none'), t('thinking.high'), t('thinking.max')],
+				enum: ['none', 'medium', 'high'],
+				enumItemLabels: [t('thinking.none'), t('thinking.medium'), t('thinking.high')],
 				enumDescriptions: [
 					t('thinking.none.desc'),
+					t('thinking.medium.desc'),
 					t('thinking.high.desc'),
-					t('thinking.max.desc'),
 				],
 				default: 'high',
 				group: 'navigation',
@@ -85,7 +86,7 @@ function buildThinkingEffortSchema() {
 }
 
 function resolveDetailKey(m: ModelDefinition): string | undefined {
-	const suffix = m.id.startsWith('deepseek-v4-') ? m.id.slice('deepseek-v4-'.length) : m.id;
+	const suffix = m.id.startsWith('mimo-v2') ? m.id.slice('mimo-v2'.length) : m.id;
 	const key = `model.${suffix}.detail`;
 	const translated = t(key);
 	return translated !== key ? key : undefined;

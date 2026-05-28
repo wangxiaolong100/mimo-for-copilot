@@ -1,5 +1,5 @@
 import vscode from 'vscode';
-import type { DeepSeekRequest, DeepSeekTool } from '../../types';
+import type { MiMoRequest, MiMoTool } from '../../types';
 
 export type RequestKind =
 	| 'main-agent'
@@ -35,8 +35,8 @@ export function classifyProviderRequest(input: {
 	});
 }
 
-export function classifyDeepSeekRequest(input: {
-	request: DeepSeekRequest;
+export function classifyMiMoRequest(input: {
+	request: MiMoRequest;
 	inputMessages?: readonly vscode.LanguageModelChatRequestMessage[];
 }): RequestKind {
 	return classifyRequest({
@@ -45,8 +45,8 @@ export function classifyDeepSeekRequest(input: {
 			(input.inputMessages ? getFirstVscodeText(input.inputMessages) : ''),
 		latestUserText:
 			(input.inputMessages ? getLatestVscodeUserText(input.inputMessages) : '') ||
-			getLatestDeepSeekUserText(input.request),
-		toolNames: input.request.tools?.map(getDeepSeekToolName) ?? [],
+			getLatestMiMoUserText(input.request),
+		toolNames: input.request.tools?.map(getMiMoToolName) ?? [],
 	});
 }
 
@@ -86,7 +86,7 @@ function isOnlyTool(toolNames: readonly string[], toolName: string): boolean {
 	return toolNames.length === 1 && toolNames[0] === toolName;
 }
 
-function getDeepSeekToolName(tool: DeepSeekTool): string {
+function getMiMoToolName(tool: MiMoTool): string {
 	return tool.function.name;
 }
 
@@ -121,7 +121,7 @@ function getVscodeMessageText(message: vscode.LanguageModelChatRequestMessage): 
 	return text;
 }
 
-function getLatestDeepSeekUserText(request: DeepSeekRequest): string {
+function getLatestMiMoUserText(request: MiMoRequest): string {
 	for (let index = request.messages.length - 1; index >= 0; index -= 1) {
 		const message = request.messages[index];
 		if (message.role === 'user') {
