@@ -39,7 +39,7 @@ export const WELCOME_SHOWN_KEY = 'mimo-copilot.welcomeShown';
 // ---- Walkthrough ----
 
 /** Walkthrough contribution ID. */
-export const WALKTHROUGH_ID = 'Vizards.mimo-for-copilot#mimoGettingStarted';
+export const WALKTHROUGH_ID = 'wangxiaolong100.mimo-for-copilot#mimoGettingStarted';
 
 // ---- Model registry ----
 

@@ -4,11 +4,11 @@
   "description": "Pick MiMo Pro, Omni & Flash models from the Copilot Chat model picker. Thinking mode, agent tools — zero config, BYOK.",
   "icon": "resources/icon.png",
   "version": "0.1.0",
-  "publisher": "Vizards",
+  "publisher": "wangxiaolong100",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Vizards/mimo-for-copilot"
+    "url": "https://github.com/wangxiaolong100/mimo-for-copilot"
   },
   "engines": {
     "vscode": "^1.116.0",
@@ -206,7 +206,7 @@
     "format": "oxfmt --write src/",
     "format:check": "oxfmt --check src/",
     "package": "vsce package --readme-path dist/README.marketplace.md -o dist/",
-    "login": "vsce login Vizards"
+    "login": "vsce login wangxiaolong100"
   },
   "devDependencies": {
     "@types/node": "^25.6.0",
